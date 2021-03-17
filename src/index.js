@@ -7,11 +7,7 @@ import debounce from 'lodash.debounce';
 
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
-import { alert, error } from '@pnotify/core/dist/PNotify.js';
-
-error({
-  text: 'Notice me, senpai!',
-});
+import { error } from '@pnotify/core/dist/PNotify.js';
 
 const refs = {
   input: document.querySelector('#input'),
@@ -22,7 +18,7 @@ refs.input.addEventListener('input', debounce(onInput, 500));
 
 function onInput(e) {
   if (!e.target.value) {
-    refs.input.innerHTML = '';
+    refs.countriesList.innerHTML = '';
     return;
   }
 
@@ -32,13 +28,23 @@ function onInput(e) {
 }
 
 function countryMarkup(countries) {
-  console.log(countries);
-  if (countries.langth === 1) {
-    refs.countriesList.insertAdjacentHTML('beforeend', countriesListTmpl);
+  refs.countriesList.innerHTML = '';
+  if (countries.length === 1) {
+    console.log(countriesListTmpl(countries));
+    refs.countriesList.insertAdjacentHTML('beforeend', countryTmpl(countries));
     return;
   }
-  if (countries.langth >= 2 && countries.langth <= 10) {
-    refs.countriesList.insertAdjacentHTML('beforeend', countryTmpl);
+  if (countries.length >= 2 && countries.length <= 10) {
+    refs.countriesList.insertAdjacentHTML(
+      'beforeend',
+      countriesListTmpl(countries),
+    );
+    return;
+  }
+  if (countries.length > 10) {
+    error({
+      text: 'Много совпадений. Уточните запрос!',
+    });
     return;
   }
 }
